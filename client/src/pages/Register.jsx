@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { useState } from "react";
 
 const Container = styled.div`
   width: 100vw;
@@ -55,22 +56,63 @@ const Button = styled.button`
 `;
 
 const Register = () => {
+ 
+  const [username, setUserName ] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPass, setConfirmPass] = useState("")
+
+  const registerBody = {
+    "username": `${username}`,
+    "email": `${email}`,
+    "password": `${password}`
+  }
+
+  const resgisterUrl = 'http://localhost:5000/api/auth/register'
+
+   async function handleSubmit(event){
+
+    event.preventDefault()
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerBody)
+  };
+
+    if(password === confirmPass){
+      
+      const response = await fetch(resgisterUrl, requestOptions)
+      
+      const data = await response.json()
+
+      console.log(data)
+
+
+    }
+    else{
+      console.log("ENTER SAME PASSWORD")
+    }
+
+  
+  }
+
+
+
   return (
     <Container>
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
-        <Form>
-          <Input placeholder="name" />
-          <Input placeholder="last name" />
-          <Input placeholder="username" />
-          <Input placeholder="email" />
-          <Input placeholder="password" />
-          <Input placeholder="confirm password" />
+        <Form onSubmit={handleSubmit}>
+          <Input placeholder="username" value={username} onChange={(e) => setUserName(e.target.value)}/>
+          <Input placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+          <Input placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+          <Input placeholder="confirm password" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)}/>
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE</Button>
+          <Button type="submit">CREATE</Button>
         </Form>
       </Wrapper>
     </Container>
